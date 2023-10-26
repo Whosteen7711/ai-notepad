@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# AI Notepad Tutorial from Elliot Chong's Youtube Channel
 
-## Getting Started
+## Status
 
-First, run the development server:
+2:22:32 Finish dashboard and set up firebase to store image
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Shadcn UI library
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. requires initialization with components.json and override of globals.css
+2. install components directly and customize as needed
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Clerk Auth
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. To make the route accessible to both signed in and signed out users, pass `publicRoutes: ["/"]` to authMiddleware
+2. To prevent Clerk authentication from running at all, pass `ignoredRoutes: ["/((?!api|trpc))(_next.*|.+\.[\w]+$)", "/"]` to authMiddleware
+3. Pass a custom `afterAuth` to authMiddleware, and replace Clerk's default behavior of redirecting unless a route is included in publicRoutes
+4. Add env vars for signIn, signUp, afterSignIn, and afterSignup to control behavior of components and navigation
 
-## Learn More
+## NextJS
 
-To learn more about Next.js, take a look at the following resources:
+1. catch-all routes: app/sign-up/[[...sign-up]]/page.tsx => add ellipsis inside brackets to extend dynamic segment
+2. Pages can access dynamic segment content through destructuring the params prop
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tailwind
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. apply tailwind styles to globals.css using the apply annotation (@apply)
 
-## Deploy on Vercel
+## Drizzle-ORM
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Typescript library for managing databases
+2. schemas can be organized into one file src/db/schema.ts or grouped src/db/schema/[file.ts]
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Drizzle-Kit
+
+1. migrations toolkit for schema updates and a database browser - Drizzle Studio
+2. Drizzle Studio requires a configuration file (drizzle.config.ts) with specs for driver, schema, and dbConnection
+3. requires ES6 target in compiler options for tsconfig
+4. [push] command lets you push schema changes directly to the databse without managing SQL migration files
+
+- requires a configuration file path (config option, default=drizzle.config.ts) and the config includes a connectionString
+
+5. NextJs only reads env vars from files within /src. Since default config path for drizzle-kit config file is "@/drizzle.config.ts" it can't access env vars
+
+- install dotenv for access outside of src
+
+6. [studio] command launches the database browser locally from the drizzle config
+
+- requires the pg package for a PostgreSQL client to manage the database
+
+## React-Query
+
+1. Helps manage client state with server side mutations to the database and data sync from api endpoints
+2. client uses axios for data requests to api endpoints
+3. TODO: investigate whethere either libraries are needed with Next13 server actions
+
+## Debounce
+
+1. custom hook to add time delay to auto-save capability
+2. Instead of writing to db after each change to editor state, add a time delay before each save
+
+## OpenAI
+
+1. DALLE2 image urls expire after one hour
